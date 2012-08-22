@@ -16,10 +16,10 @@ def ensure_dir(filename):
     dirname = os.path.dirname(filename)
     if not os.path.isdir(dirname):
         os.makedirs(dirname)
-        
-        
+
+
 def files_at_path(media_folder):
-    """ List all the files in the given path and in all 
+    """ List all the files in the given path and in all
         of its subfolders.
     """
     found_files = []
@@ -39,11 +39,11 @@ def filefields_in_model(model_class):
         raise AssertionError(
                 "Given class %s does not extend from Model."
                 % model_class)
-    
+
     fields = [x
             for x in model_class._meta.fields
             if isinstance(x, FileField)]
-    return fields 
+    return fields
 
 
 def linked_files_from_model(model_class):
@@ -64,12 +64,13 @@ def linked_files_from_model(model_class):
 
 
 def linked_files_from_all_models():
-    """ List all the files linked by all the 
+    """ List all the files linked by all the
         registered models.
     """
     model_classes = loading.get_models()
     files = []
-        
+
     for model_class in model_classes:
-        files.append(linked_files_from_model(model_class))
+        for f in linked_files_from_model(model_class):
+            files.append(f)
     return files

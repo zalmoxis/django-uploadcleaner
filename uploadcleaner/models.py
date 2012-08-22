@@ -25,31 +25,31 @@ def _log_file_name(model_instance, filename):
 
 
 class UploadCleanerLogManager(models.Manager):
-    
+
     def do_clean(self, backup = True, dryrun = False):
         """ Perform the cleaning operation.
         """
         files_on_filesystem = self.files_from_upload_paths()
         files_on_db =  linked_files_from_all_models()
-        
+
         obsolete_files = self.filter_linked_files(
                 files_on_filesystem, files_on_db)
-        
+
         log_instance = self.create(
                 dryrun = dryrun)
-        
+
         # Create backup
-        if backup:        
+        if backup:
             self.create_backup(obsolete_files, log_instance)
-        
+
         if dryrun:
             self.dryrun(obsolete_files)
-        else:       
+        else:
             self.delete_obsolete_files(obsolete_files, log_instance)
         log_instance.save()
         return log_instance
-        
-    
+
+
     def files_from_upload_paths(self):
         """ Creates a list with all the files in the
             defined upload folders.
@@ -63,7 +63,7 @@ class UploadCleanerLogManager(models.Manager):
             print("Fetching files from %s" %
                   settings.MEDIA_ROOT)
             upload_paths = (settings.MEDIA_ROOT,)
-            
+
         files_on_filesystem = []
         for folder in upload_paths:
             files_on_filesystem += files_at_path(folder)
@@ -76,15 +76,18 @@ class UploadCleanerLogManager(models.Manager):
             filter those files which are linked by the database
             and those which are in the log directory.
         """
-        return [x for x in files_on_filesystem
-                if x not in files_on_db]
-        
-            
+        not_in_db = []
+        for fs_file in files_on_filesystem:
+            if fs_file not in files_on_db:
+                not_in_db.append(fs_file)
+        return not_in_db
+
+
     def create_backup(self, files, instance):
         backup_filename = _log_file_name(instance,
                 "backup.zip")
         ensure_dir(backup_filename)
-        
+
         backup = ZipFile(backup_filename,"w")
         for filename in files:
             backup.write(filename)
@@ -107,13 +110,13 @@ class UploadCleanerLogManager(models.Manager):
         log_filename = _log_file_name(instance,
                 "deleted_files.log")
         ensure_dir(log_filename)
-        
+
         log = open(log_filename, "w")
         for filename in files:
             log_string = "removing: %s" % filename
             print(log_string)
             log.write(log_string + "\n")
-            os.remove(file)
+            os.remove(filename)
         log.close()
         instance.log_file.name = log_filename
 
@@ -131,28 +134,28 @@ class UploadCleanerLog(models.Model):
             default = False,
             verbose_name = _("Dry-run"),
             help_text = _("Performs a dry run"))
-    
+
     log_file = models.FileField(
             blank = True,
             null = True,
-            upload_to = _log_file_name, 
+            upload_to = _log_file_name,
             verbose_name = _("Log file"),
             help_text = _("The log file."))
-    
+
     backup_file = models.FileField(
             blank = True,
             null = True,
-            upload_to = _log_file_name, 
+            upload_to = _log_file_name,
             verbose_name = _("Backup file"),
             help_text = _("The backup file."))
-    
+
     objects = UploadCleanerLogManager()
-    
+
     class Meta:
         ordering = ('timestamp',)
         verbose_name = _("Upload cleaner log")
         verbose_name_plural = _("Upload cleaner log")
-        
+
     def delete(self, using = DEFAULT_DB_ALIAS):
         self.log_file.delete();
         self.backup_file.delete();
