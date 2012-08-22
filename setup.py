@@ -8,13 +8,13 @@ Created on Jul 14, 2012
 
 from distutils.core import setup
 
-setup(name = 'django-puzzledev-uploadcleaner',
-      version = '1.0',
-      author = "Michele Sama",
-      author_email = "m.sama@puzzledev.com",
+setup(name = 'django-lockwooddev-uploadcleaner-fork',
+      version = '1.1',
+      author = "Original: Michele Sama. Fork: Carlo Smouter",
+      author_email = "lockwooddev@gmail.com",
       maintainer = "Michele Sama",
-      maintainer_email = "m.sama@puzzledev.com",
-      url = "www.puzzledev.com/",
+      maintainer_email = "lockwooddev@gmail.com",
+      url = "",
       description = "",
       long_description = "",
       download_url = "",
