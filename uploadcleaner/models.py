@@ -56,8 +56,8 @@ class UploadCleanerLogManager(models.Manager):
         """
         if hasattr(settings, 'MEDIA_FOLDER_LIST'):
             print("Fetching files from %s" %
-                  settings.MEDIA_FOLDER_LIST)
-            upload_paths = settings.MEDIA_FOLDER_LIST
+                  settings.MEDIA_ROOT+settings.MEDIA_FOLDER_LIST)
+            upload_paths = (settings.MEDIA_ROOT + settings.MEDIA_FOLDER_LIST, )
         else:
             print("settings.MEDIA_FOLDER_LIST is not set.")
             print("Fetching files from %s" %
