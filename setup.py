@@ -8,12 +8,12 @@ Created on Jul 14, 2012
 
 from distutils.core import setup
 
-setup(name = 'django-lockwooddev-uploadcleaner-fork',
+setup(name = 'django-uploadcleaner',
       version = '1.1',
-      author = "Original: Michele Sama. Fork: Carlo Smouter",
-      author_email = "lockwooddev@gmail.com",
-      maintainer = "Michele Sama",
-      maintainer_email = "lockwooddev@gmail.com",
+      author = "Original: Michele Sama. Fork: Darie Petrov",
+      author_email = "darie@cambriansoft.org",
+      maintainer = "Darie Petrov",
+      maintainer_email = "darie@cambriansoft.org",
       url = "",
       description = "",
       long_description = "",
